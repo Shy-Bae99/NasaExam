@@ -1,9 +1,37 @@
 ﻿@page "/Apod"
+@inject NasaService NasaService
 
-<PageTitle>Nasa Picture API page</PageTitle>
+<h3>Image du jour</h3>
 
-<h1>APOD, api de la nasa, permettant d'observer des images du ciel, et de la terre</h1>
+<input type="date" @bind-value="dateInput" @bind-value:event="oninput" />
+<button @onclick="SearchImage">Rechercher</button>
 
-Bienvenue sur cette page.
+@if (nasaImage == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <h4>@nasaImage.Title</h4>
+    <img src="@nasaImage.Url" alt="@nasaImage.Title" width="600" />
+    <p>@nasaImage.Explanation</p>
+}
 
+@code {
+    private NasaImageResponse? nasaImage;
+    private DateTime? dateInput = DateTime.Today; // Initialisation avec la date du jour
 
+    protected override async Task OnInitializedAsync()
+    {
+        nasaImage = await NasaService.GetImageOfTheDay();
+    }
+
+    private async Task SearchImage()
+    {
+        if (dateInput.HasValue)
+        {
+            string formattedDate = dateInput.Value.ToString("yyyy-MM-dd");
+            nasaImage = await NasaService.GetImageOfTheDay(formattedDate);
+        }
+    }
+}
