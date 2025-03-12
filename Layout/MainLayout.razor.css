@@ -2,6 +2,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    background-image: linear-gradient(320deg, antiquewhite, darkslategrey);
+   
+    
 }
 
 main {
@@ -9,8 +12,10 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(60deg, antiquewhite, darkslategrey);
 }
+
+/* rgb(5, 39, 103) 0%, #3a0647 70% */
 
 .top-row {
     background-color: #f7f7f7;

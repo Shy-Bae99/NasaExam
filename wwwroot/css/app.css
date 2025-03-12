@@ -2,6 +2,8 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+
+
 h1:focus {
     outline: none;
 }
@@ -111,4 +113,98 @@ code {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
+}
+
+.favorites-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; 
+    margin-top: 20px;
+}
+
+.favorite-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+    background-image: radial-gradient(20em,navajowhite, dimgrey);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-image {
+    max-width: 100%;
+    width: 400px; 
+    height: auto;
+    border-radius: 5px;
+}
+
+.delete-button {
+    background-image: radial-gradient(45px,dimgrey,darkslategrey);
+    color: navajowhite;
+    border: dot-dot-dash;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-left: 20px;
+}
+
+
+
+.contenuAPOD {
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.PhotoAPOD {
+    margin-bottom: 20px;
+}
+
+.PhotoCentreAPOD {
+    display: block;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.TexteCentreAPOD {
+    text-align: justify;
+    line-height: 1.6;
+    margin-top: 20px;
+}
+
+.text-container h4 {
+    margin-bottom: 10px;
+}
+
+.text-container p {
+    margin-bottom: 15px;
+}
+.ButtonCalendar{
+    background-image: radial-gradient(45px,dimgrey,darkslategrey);
+}
+.ButtonSearch{
+    background-image: radial-gradient(45px,dimgrey,darkslategrey);
+}
+.ButtonRandom{
+    background-image: radial-gradient(45px,dimgrey,darkslategrey);
+}
+.ButtonFav{
+    background-image: radial-gradient(45px,dimgrey,darkslategrey);
+}
+.HomeText{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: justify;
+    color: antiquewhite;
+    width: 40%;
+    line-height: 2;
 }

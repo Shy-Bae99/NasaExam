@@ -1,0 +1,41 @@
+﻿@page "/Favorites"
+@inject IJSRuntime JSRuntime
+
+<h3>Mes Favoris</h3>
+
+@if (favoriteImages == null || favoriteImages.Count == 0)
+{
+    <p>Aucune image en favoris.</p>
+}
+else
+{
+    <div class="favorites-container">
+        @foreach (var imageUrl in favoriteImages)
+        {
+            <div class="favorite-item">
+                <img src="@imageUrl" alt="Favorite Image" class="favorite-image" />
+                <button class="delete-button" @onclick="() => RemoveFavorite(imageUrl)">❌ Supprimer</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<string> favoriteImages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFavorites();
+    }
+
+    private async Task LoadFavorites()
+    {
+        favoriteImages = await JSRuntime.InvokeAsync<List<string>>("getFavorites");
+    }
+
+    private async Task RemoveFavorite(string imageUrl)
+    {
+        await JSRuntime.InvokeVoidAsync("toggleFavorite", imageUrl);
+        await LoadFavorites(); // Recharger après suppression
+    }
+}

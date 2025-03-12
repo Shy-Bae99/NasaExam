@@ -39,6 +39,9 @@
     background-image: url("./images/EarthWhite.png");
 }
 
+.bi-loc-nested-nav-menu {
+    background-image: url("./images/LocationWhite.png");
+}
 .nav-item {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;
@@ -87,3 +90,4 @@
         overflow-y: auto;
     }
 }
+

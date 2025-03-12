@@ -1,29 +1,44 @@
 ﻿@page "/Apod"
+@inject IJSRuntime JSRuntime
 @inject NasaService NasaService
 
-<h3>Image du jour</h3>
+<h3>L'image du jour de la NASA</h3>
 
-<input type="date" @bind-value="dateInput" @bind-value:event="oninput" />
-<button @onclick="SearchImage">Rechercher</button>
+<div class="contenuAPOD">
+    <input class="ButtonCalendar" type="date" @bind-value="dateInput" @bind-value:event="oninput" />
+    <button class="ButtonSearch"@onclick="SearchImage">Rechercher</button>
+    <button class="ButtonRandom" @onclick="GetRandomImage">Image aléatoire</button>
+    <button class="ButtonFav" @onclick="ToggleFavorite">
+        <span style="font-size: 24px; color:@(isFavorite ? "pink" : "gray")">★</span>
+    </button>
 
-@if (nasaImage == null)
-{
-    <p>Chargement...</p>
-}
-else
-{
-    <h4>@nasaImage.Title</h4>
-    <img src="@nasaImage.Url" alt="@nasaImage.Title" width="600" />
-    <p>@nasaImage.Explanation</p>
-}
+    @if (nasaImage == null)
+    {
+        <p>Chargement...</p>
+    }
+    else
+    {
+        <div class="PhotoAPOD">
+            <img src="@nasaImage.Url" alt="@nasaImage.Title" class="PhotoCentreAPOD" />
+        </div>
+
+        <div class="TexteCentreAPOD">
+            <h4>@nasaImage.Title</h4>
+            <p>@nasaImage.Explanation</p>
+        </div>
+    }
+</div>
 
 @code {
     private NasaImageResponse? nasaImage;
-    private DateTime? dateInput = DateTime.Today; // Initialisation avec la date du jour
+    private DateTime? dateInput = DateTime.Today;
+    private bool isFavorite = false;
+    private static readonly DateTime StartDate = new DateTime(1995, 6, 16); // Début APOD
 
     protected override async Task OnInitializedAsync()
     {
         nasaImage = await NasaService.GetImageOfTheDay();
+        await CheckIfFavorite();
     }
 
     private async Task SearchImage()
@@ -32,6 +47,38 @@ else
         {
             string formattedDate = dateInput.Value.ToString("yyyy-MM-dd");
             nasaImage = await NasaService.GetImageOfTheDay(formattedDate);
+            await CheckIfFavorite();
+        }
+    }
+
+    private async Task GetRandomImage()
+    {
+        Random random = new Random();
+        int range = (DateTime.Today - StartDate).Days;
+        DateTime randomDate = StartDate.AddDays(random.Next(range));
+
+        string formattedDate = randomDate.ToString("yyyy-MM-dd");
+        nasaImage = await NasaService.GetImageOfTheDay(formattedDate);
+        dateInput = randomDate;
+        await CheckIfFavorite();
+    }
+
+    private async Task ToggleFavorite()
+    {
+        if (nasaImage != null)
+        {
+            await JSRuntime.InvokeVoidAsync("toggleFavorite", nasaImage.Url);
+            isFavorite = !isFavorite;
+        }
+    }
+
+    private async Task CheckIfFavorite()
+    {
+        if (nasaImage != null)
+        {
+            isFavorite = await JSRuntime.InvokeAsync<bool>("isFavorite", nasaImage.Url);
         }
     }
 }
+
+
