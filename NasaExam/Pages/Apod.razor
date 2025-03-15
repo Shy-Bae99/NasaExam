@@ -1,6 +1,6 @@
 ﻿@page "/Apod"
 @inject IJSRuntime JSRuntime
-@inject NasaService NasaService
+@inject NasaService NasaService 
 
 <h3>L'image du jour de la NASA</h3>
 
@@ -14,7 +14,7 @@
 
     @if (nasaImage == null)
     {
-        <p>Chargement...</p>
+        <p>Chargement...</p> 
     }
     else
     {
@@ -33,7 +33,7 @@
     private NasaImageResponse? nasaImage;
     private DateTime? dateInput = DateTime.Today;
     private bool isFavorite = false;
-    private static readonly DateTime StartDate = new DateTime(1995, 6, 16); // Début APOD
+    private static readonly DateTime StartDate = new DateTime(1995, 6, 16);
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,5 +80,3 @@
         }
     }
 }
-
-
