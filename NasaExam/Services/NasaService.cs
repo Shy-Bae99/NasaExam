@@ -2,31 +2,39 @@
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-public class NasaService
+namespace NasaExam.Services
 {
-    private readonly HttpClient _httpClient;
-    private const string ApiKey = "odevGI9hzzQlKBF4VcNy66qwgGPIL6yb7glzaMPN";
-
-    public NasaService(HttpClient httpClient)
+    public interface INasaService
     {
-        _httpClient = httpClient;
+        Task<NasaImageResponse> GetImageOfTheDay(string date = "");
     }
 
-    public async Task<NasaImageResponse> GetImageOfTheDay(string date = "")
+    public class NasaService : INasaService
     {
-        string url = $"https://api.nasa.gov/planetary/apod?api_key={ApiKey}";
-        if (!string.IsNullOrEmpty(date))
+        private readonly HttpClient _httpClient;
+        private const string ApiKey = "odevGI9hzzQlKBF4VcNy66qwgGPIL6yb7glzaMPN";
+
+        public NasaService(HttpClient httpClient)
         {
-            url += $"&date={date}";
+            _httpClient = httpClient;
         }
 
-        return await _httpClient.GetFromJsonAsync<NasaImageResponse>(url);
-    }
-}
+        public async Task<NasaImageResponse> GetImageOfTheDay(string date = "")
+        {
+            string url = $"https://api.nasa.gov/planetary/apod?api_key={ApiKey}";
+            if (!string.IsNullOrEmpty(date))
+            {
+                url += $"&date={date}";
+            }
 
-public class NasaImageResponse
-{
-    public string Url { get; set; }
-    public string Title { get; set; }
-    public string Explanation { get; set; }
+            return await _httpClient.GetFromJsonAsync<NasaImageResponse>(url);
+        }
+    }
+
+    public class NasaImageResponse
+    {
+        public string Url { get; set; }
+        public string Title { get; set; }
+        public string Explanation { get; set; }
+    }
 }

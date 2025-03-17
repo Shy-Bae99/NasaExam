@@ -1,26 +1,75 @@
-using Xunit;
+using Bunit;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
+using Moq;
+using NasaExam.Pages;
+using NasaExam.Services;
 
-public class Calculator
+namespace TestProject1;
+
+public class TestProject1 : TestContext
 {
-    public int Add(int a, int b)
+    private readonly Mock<INasaService> nasaServiceMock;
+    private readonly Mock<IJSRuntime> jsRuntimeMock;
+
+    public TestProject1()
     {
-        return a + b;
+        nasaServiceMock = new Mock<INasaService>();
+        jsRuntimeMock = new Mock<IJSRuntime>();
+
+        // Enregistrer les mocks dans les services
+        Services.AddSingleton(nasaServiceMock.Object);
+        Services.AddSingleton(jsRuntimeMock.Object);
     }
-}
 
-
-public class CalculatorTests
-{
-    [Fact] // Marks this method as a test method
-    public void Add_WhenCalled_ReturnsSum()
+    [Fact]
+    public void ApodComponent_ShouldDisplayImage_WhenImageIsFetched()
     {
         // Arrange
-        var calculator = new Calculator();
+        var testImage = new NasaImageResponse
+        {
+            Url = "https://example.com/test-image.jpg",
+            Title = "Test Image",
+            Explanation = "This is a test image."
+        };
+
+        nasaServiceMock.Setup(s => s.GetImageOfTheDay(It.IsAny<string>()))
+            .ReturnsAsync(testImage);
 
         // Act
-        var result = calculator.Add(2, 3);
+        var component = RenderComponent<Apod>();
 
         // Assert
-        Assert.Equal(5, result); // Asserts that the result is 5
+        var imgElement = component.Find("img");
+        Assert.NotNull(imgElement);
+        Assert.Contains("https://example.com/test-image.jpg", imgElement.OuterHtml);
+    }
+
+    [Fact]
+    public void ApodComponent_ShouldToggleFavoriteColor_WhenFavoriteButtonClicked()
+    {
+        // Arrange
+        var testImage = new NasaImageResponse
+        {
+            Url = "https://example.com/test-image.jpg",
+            Title = "Test Image",
+            Explanation = "This is a test image."
+        };
+
+        nasaServiceMock.Setup(s => s.GetImageOfTheDay(It.IsAny<string>()))
+            .ReturnsAsync(testImage);
+
+        jsRuntimeMock.Setup(j => j.InvokeAsync<bool>("isFavorite", It.IsAny<object[]>()))
+            .ReturnsAsync(false);
+
+        var component = RenderComponent<Apod>();
+
+        // Act
+        var button = component.Find(".ButtonFav");
+        button.Click();
+
+        // Assert
+        var starElement = component.Find("span");
+        Assert.Contains("pink", starElement.OuterHtml);
     }
 }
